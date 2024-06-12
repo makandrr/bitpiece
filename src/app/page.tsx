@@ -1,10 +1,13 @@
 import Post from '@/components/Post'
 import { fetchTodayPost } from '@/lib/contentful'
+import { log } from '@/lib/logger'
 
 export const revalidate = 3600
 
 export default async function Home() {
     const post = await fetchTodayPost()
+
+    log('Home component post', post)
 
     if (!post) {
         return <p>No post for today...</p>

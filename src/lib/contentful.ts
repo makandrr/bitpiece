@@ -1,6 +1,7 @@
 import { createClient, Entry, Asset } from "contentful";
 import { cache } from "react";
 import { EntrySkeletonType } from "contentful";
+import { log } from "./logger";
 
 const client = createClient({
     space: process.env.CONTENTFUL_SPACE_ID!,
@@ -28,6 +29,9 @@ type PostEntry = Entry<PostSkeleton>;
 
 
 export const fetchTodayPost = cache(async (): Promise<PostEntry | undefined> => {
+    log('fetchTodayPost')
+    log('env.spaceID', process.env.CONTENTFUL_SPACE_ID)
+
     const today = new Date()
     today.setHours(0)
     today.setMinutes(0)
@@ -37,10 +41,14 @@ export const fetchTodayPost = cache(async (): Promise<PostEntry | undefined> => 
         content_type: 'post',
         'fields.date': today.toISOString()
     });
+    log('fetchTodayPost entries', entries)
     const post = entries.items[0]
+    log('fetchTodayPost post', post)
     if (post && post.sys.contentType.sys.id === 'post') {
+        log('fetchTodayPost return post', post)
         return post as PostEntry
     }
+    log('fetchTodayPost return undefined')
     return undefined
 })
 
