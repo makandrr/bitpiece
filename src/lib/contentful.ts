@@ -32,14 +32,10 @@ export const fetchTodayPost = cache(async (): Promise<PostEntry | undefined> => 
     log('fetchTodayPost')
     log('env.spaceID', process.env.CONTENTFUL_SPACE_ID)
 
-    const today = new Date()
-    today.setHours(0)
-    today.setMinutes(0)
-    today.setSeconds(0)
-    today.setMilliseconds(0)
     const entries = await client.getEntries({
         content_type: 'post',
-        'fields.date': today.toISOString()
+        order: ['-sys.createdAt'],
+        limit: 1
     });
     log('fetchTodayPost entries', entries)
     const post = entries.items[0]
